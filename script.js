@@ -1,91 +1,108 @@
-var gameMode = "player1";
-var player1Dice = [];
-var player2Dice = [];
-var player1Numb = [];
-var player2Numb = [];
-var player1Wins = 0;
-var player2Wins = 0;
+var gameMode = `name1`;
+var player1 = ``;
+var player2 = ``;
+var player1DiceRoll = [];
+var player2DiceRoll = [];
+var player1Number = [];
+var player2Number = [];
 
 var main = function (input) {
-  myOutputValue = " ";
-
-  if (gameMode == "player1") {
-    var dice1 = calDiceRoll();
-    console.log(dice1);
-    var dice2 = calDiceRoll();
-    console.log(dice2);
-    player1Dice.push(dice1);
-    player1Dice.push(dice2);
-    myOutputValue = `'Welcome player1 you rolled ${dice1} and ${dice2} <br> Now select a placement, 1 to place dice1 infront and 2 to place dice2 infront"`;
-    gameMode = "chooseplacement1";
-  } else if (gameMode == "chooseplacement1" && input == 1) {
-    var numb1 = player1Dice[0] + "" + player1Dice[1];
-    player1Numb.push(numb1);
-    myOutputValue = "You got " + numb1;
-    gameMode = "player2";
-  } else if (gameMode == "chooseplacement1" && input == 2) {
-    var numb2 = player1Dice[1] + "" + player1Dice[0];
-    player1Numb.push(numb2);
-    console.log(numb2);
-    myOutputValue = "You got " + numb2;
-    gameMode = "player2";
+  var myOutputValue = ``;
+  if (gameMode == `name1`) {
+    myOutputValue = `Please key in your name player2`;
+    player1 = input;
+    gameMode = `name2`;
+  } else if (gameMode == `name2`) {
+    myOutputValue = `${player1} please roll the dice by pressing the submit button`;
+    player2 = input;
+    gameMode = `game1`;
   }
 
-  if (gameMode == "player2") {
-    var dice1 = calDiceRoll();
-    console.log(dice1);
-    var dice2 = calDiceRoll();
-    console.log(dice2);
-    player2Dice.push(dice1);
-    player2Dice.push(dice2);
-    myOutputValue = `'Welcome player2 you rolled ${dice1} and ${dice2} <br> Now select a placement, 1 to place dice1 infront and 2 to place dice2 infront"`;
-    gameMode = "chooseplacement2";
-  } else if (gameMode == "chooseplacement2" && input == 1) {
-    var numb3 = player2Dice[0] + "" + player2Dice[1];
-    player2Numb.push(numb3);
-    myOutputValue = "You got " + numb3 + " Decide the winner now";
-    gameMode = "deciding";
-  } else if (gameMode == "chooseplacement2" && input == 2) {
-    var numb4 = player2Dice[1] + "" + player2Dice[0];
-    player2Numb.push(numb4);
-    myOutputValue = "You got " + numb4 + " Decide the winner now";
-    gameMode = "deciding";
+  if (gameMode == `game1`) {
+    myOutputValue = calGamePlay();
+  }
+  if (gameMode == `game2`) {
+    var player2Dice = calDiceRoll();
+    player2DiceRoll.push(player2Dice);
+    var player2Dice2 = calDiceRoll();
+    player2DiceRoll.push(player2Dice2);
+    myOutputValue = `${player2} you rolled ${player2Dice} and ${player2Dice2} . Please select the placement of the dice. <br> 0: Place first dice infront. <br> 1: Place second dice infront`;
+    gameMode = `choosing2`;
   }
 
-  if (gameMode == "deciding") {
-    var winner = calWinner(player1Numb, player2Numb);
-    myOutputValue =
-      "The winner is " +
-      winner +
-      "<br>" +
-      " The scores are: " +
-      "<br>" +
-      "Player 1: " +
-      player1Wins +
-      "<br>" +
-      " Player 2: " +
-      player2Wins;
-    player1Dice = [];
-    player2Dice = [];
-    player1Numb = [];
-    player2Numb = [];
-    gameMode = "player1";
+  if (gameMode == `choosing1` && input == 0) {
+    player1Number.push(
+      Number(String(player1DiceRoll[0]) + String(player1DiceRoll[1]))
+    );
+    console.log(player1Number);
+    gameMode = `game2`;
+    myOutputValue = `${player1} your number is ${player1DiceRoll[0]}${player1DiceRoll[1]} <br> ${player2} please press submit to roll the dice `;
+  } else if (gameMode == `choosing1` && input == 1) {
+    gameMode = `game2`;
+    player1Number.push(
+      Number(String(player1DiceRoll[1]) + String(player1DiceRoll[0]))
+    );
+    gameMode = `game2`;
+    myOutputValue = `${player1} your number is ${player1DiceRoll[1]}${player1DiceRoll[0]} <br> ${player2} press submit to roll the dice `;
+  }
+
+  if (gameMode == `choosing2` && input == 0) {
+    player2Number.push(
+      Number(String(player2DiceRoll[0]) + String(player2DiceRoll[1]))
+    );
+    console.log(player2Number);
+    myOutputValue = `${player2} your number is ${player2DiceRoll[0]}${player2DiceRoll[1]} <br> Press submit to check the winner`;
+    gameMode = `calculating`;
+  } else if (gameMode == `choosing2` && input == 1) {
+    player1Number.push(
+      Number(String(player2DiceRoll[1]) + String(player2DiceRoll[0]))
+    );
+    console.log(player2Number);
+    myOutputValue = `${player2} your number is ${player2DiceRoll[1]}${player2DiceRoll[0]} <br> Press submit to check the winner`;
+    gameMode = `calculating`;
+  }
+  if (gameMode == `calculating`) {
+    if (player1Number > player2Number) {
+      myOutputValue = `${player1} got ${player1Number[0]} and ${player2} got ${player2Number[0]} <br> ${player1} won! Key in player 1 name`;
+    } else if (player1Number < player2Number) {
+      myOutputValue = `${player1} got ${player1Number[0]} and ${player2} got ${player2Number[0]} <br> ${player2} won! Key in player1 name`;
+    }
+    player1 = ``;
+    player2 = ``;
+    player1DiceRoll = [];
+    player2DiceRoll = [];
+    player1Number = [];
+    player2Number = [];
+    gameMode = `name1`;
   }
   return myOutputValue;
 };
 
 var calDiceRoll = function () {
-  return Math.ceil(Math.random() * 6);
+  var dice = Math.ceil(Math.random() * 6);
+  return dice;
 };
 
-var calWinner = function (player1Numb, player2Numb) {
-  myOutputValue = " ";
-  if (player1Numb < player2Numb) {
-    myOutputValue = "Player 2";
-    player2Wins += 1;
-  } else if (player1Numb > player2Numb) {
-    myOutputValue = "Player 1";
-    player1Wins += 1;
-  }
+var calGamePlay = function () {
+  var dice1 = calDiceRoll();
+  console.log(dice1);
+  player1DiceRoll.push(dice1);
+  var dice2 = calDiceRoll();
+  console.log(dice2);
+  player1DiceRoll.push(dice2);
+  myOutputValue = `${player1} you rolled ${dice1} and ${dice2} . Please select the placement of the dice. <br>Key in <br> 0: Place first dice infront. <br> 1: Place second dice infront`;
+  gameMode = `choosing1`;
   return myOutputValue;
 };
+
+var resetGV = function () {
+  player1 = ``;
+  player2 = ``;
+  player1DiceRoll = [];
+  player2DiceRoll = [];
+  player1Number = [];
+  player2Number = [];
+};
+
+//hasWon == true
+//hasWon = !true
